@@ -81,6 +81,9 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
     while True:
         msg = input("")
 
+        if len(msg) == 0:
+            continue
+
         if msg[0] == '/':
             execute_command(s, msg[1:])
 
