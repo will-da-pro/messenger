@@ -54,10 +54,10 @@ def receive_messages(s: socket.socket) -> None:
                     print(packet.content)
 
                 elif packet.type == 3:
-                    if packet.content == 1:
+                    if packet.content == '1':
                         print("Message too long! (>100)")
 
-                    elif packet.content == 2:
+                    elif packet.content == '2':
                         print("Command not found!")
                     
                     else:

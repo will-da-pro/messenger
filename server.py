@@ -122,6 +122,7 @@ def broadcast(message: str) -> None:
             user.conn.send(packet.encode())
         except:
             del users[name]
+            broadcast(f"User {name} disconnected.")
 
 def new_client(conn: socket.socket, addr) -> None:
     raw_data: bytes = conn.recv(1024)
