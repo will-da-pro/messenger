@@ -1,7 +1,7 @@
 import socket
 from threading import Thread
 
-from packets import Packet
+from packets import InvalidPacketException, Packet
 
 HOST = input("Server address: ")
 PORT = 64646  # The port used by the server
@@ -48,7 +48,11 @@ def receive_messages(s: socket.socket) -> None:
                 if len(raw_packet) == 0:
                     continue
 
-                packet = Packet.decode(raw_packet)
+                try:
+                    packet = Packet.decode(raw_packet)
+
+                except InvalidPacketException:
+                    continue
 
                 if packet.type == 2:
                     print(packet.content)

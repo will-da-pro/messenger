@@ -1,7 +1,7 @@
 import socket
 from threading import Thread
 
-from packets import Packet
+from packets import InvalidPacketException, Packet
 
 PORT = 64646
 
@@ -85,8 +85,12 @@ class User:
                 for raw_packet in raw_packets:
                     if len(raw_packet) == 0:
                         continue
+                    
+                    try:
+                        packet = Packet.decode(raw_packet)
 
-                    packet = Packet.decode(raw_packet)
+                    except InvalidPacketException:
+                        continue
 
                     if packet.type == 2:
                         message: str = str(packet.content)
@@ -112,6 +116,7 @@ class User:
         self.conn.close()
 
 users: dict[str, User] = {}
+banned_users: dict[str, str] = {}
 
 def broadcast(message: str) -> None:
     packet = Packet(2, message)

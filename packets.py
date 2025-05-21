@@ -1,6 +1,10 @@
 import json
 import hashlib
 
+class InvalidPacketException(Exception):
+    def __init__(self, message: str):
+        self.message = message
+
 class Packet:
     """
     Packet Types:
@@ -32,23 +36,24 @@ class Packet:
 
     @classmethod
     def decode(cls, data_str: str):
-        print(data_str)
-        data = json.loads(data_str)
+        try:
+            data = json.loads(data_str)
+
+        except:
+            raise InvalidPacketException("Invalid JSON")
 
         type: int | None = data.get("type")
         content: str | None = data.get("content")
         hash: str | None = data.get("hash")
 
         if type is None or content is None or hash is None:
-            raise Exception("Invalid Packet")
+            raise InvalidPacketException("Invalid Packet")
 
         hash_check = hashlib.sha256(str(content).encode()).hexdigest()
 
         if hash != hash_check:
-            raise Exception("Packet data does not match hash")
+            raise InvalidPacketException("Packet data does not match hash")
 
         packet = cls(type, content)
         return packet
-
-
 
