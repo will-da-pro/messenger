@@ -80,6 +80,7 @@ class User:
                     return
 
                 packets_str = raw_data.decode()
+                print(packets_str)
                 raw_packets = packets_str.split(chr(4))
 
                 for raw_packet in raw_packets:
@@ -125,6 +126,7 @@ def broadcast(message: str) -> None:
     for name, user in list(users.items()):
         try:
             user.conn.send(packet.encode())
+
         except:
             del users[name]
             broadcast(f"User {name} disconnected.")
@@ -138,8 +140,15 @@ def new_client(conn: socket.socket, addr) -> None:
     for raw_packet in raw_packets:
         if len(raw_packet) == 0:
             continue
-    
-        packet = Packet.decode(raw_packet)
+
+        print(raw_packet)
+   
+        try:
+            packet = Packet.decode(raw_packet)
+
+        except InvalidPacketException:
+            continue
+
         name: str = str(packet.content)
 
         if packet.type != 1:
